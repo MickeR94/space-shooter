@@ -14,10 +14,21 @@ surf = pygame.Surface((100, 200))
 surf.fill('orange')
 x = 100
 
-# import an image, the space ship and stars. Use convert/convert_alpha for improved performance
+# imports. Use convert/convert_alpha for improved performance
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
+player_rect = player_surf.get_frect(center = (WINDOW_WIDTH/2,WINDOW_HEIGHT -100))
+player_direction = 1
+
+meteor_surf = pygame.image.load(join('images', 'meteor.png')).convert_alpha()
+meteor_rect = meteor_surf.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+
+laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
+laser_rect = laser_surf.get_rect(bottomleft = (20, WINDOW_HEIGHT -20))
+
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
 star_positions = [(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)) for i in range(20)]
+
+
 
 while running:
     # Event loop
@@ -27,12 +38,27 @@ while running:
     
     # Draw the game
     display_surface.fill('darkgray')
-    x += 0.1
     # the ship is positioned at (x, 250)
-    display_surface.blit(player_surf, (x,250))
+    
     for pos in star_positions:
         display_surface.blit(star_surf, pos)
-    pygame.display.update() #update updates the entire window
+    
+    
+    
+    # draw the meteor
+    display_surface.blit(meteor_surf, meteor_rect)
+    # draw the laser
+    display_surface.blit(laser_surf, laser_rect)
+    
+    # player movement
+    player_rect.x += player_direction * 0.4
+    # change the direction if the right side of the ship touches the right edge, or left side of the ship touches the left edge
+    if player_rect.right > WINDOW_WIDTH or player_rect.left < 0:
+        player_direction *= -1
+    #    player_rect.left += 0.2        
+    display_surface.blit(player_surf, player_rect)
+
+    pygame.display.update() # updates the entire window
     
     
 
