@@ -8,6 +8,7 @@ WINDOW_WIDTH, WINDOW_HEIGHT  = 1280, 720
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Space Shooter')
 running = True
+clock = pygame.time.Clock()
 
 # plain surface
 surf = pygame.Surface((100, 200))
@@ -16,8 +17,11 @@ x = 100
 
 # imports. Use convert/convert_alpha for improved performance
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
-player_rect = player_surf.get_frect(center = (WINDOW_WIDTH/2,WINDOW_HEIGHT -100))
-player_direction = 1
+player_rect = player_surf.get_frect(center = (WINDOW_WIDTH/2,WINDOW_HEIGHT -350))
+player_direction = pygame.math.Vector2(20, -10)
+
+star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
+star_positions = [(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)) for i in range(20)]
 
 meteor_surf = pygame.image.load(join('images', 'meteor.png')).convert_alpha()
 meteor_rect = meteor_surf.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
@@ -25,12 +29,8 @@ meteor_rect = meteor_surf.get_rect(center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
 laser_rect = laser_surf.get_rect(bottomleft = (20, WINDOW_HEIGHT -20))
 
-star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
-star_positions = [(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)) for i in range(20)]
-
-
-
 while running:
+    clock.tick(10)
     # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -38,12 +38,9 @@ while running:
     
     # Draw the game
     display_surface.fill('darkgray')
-    # the ship is positioned at (x, 250)
     
     for pos in star_positions:
         display_surface.blit(star_surf, pos)
-    
-    
     
     # draw the meteor
     display_surface.blit(meteor_surf, meteor_rect)
@@ -51,18 +48,12 @@ while running:
     display_surface.blit(laser_surf, laser_rect)
     
     # player movement
-    player_rect.x += player_direction * 0.4
-    # change the direction if the right side of the ship touches the right edge, or left side of the ship touches the left edge
-    if player_rect.right > WINDOW_WIDTH or player_rect.left < 0:
-        player_direction *= -1
-    #    player_rect.left += 0.2        
+    player_rect.center += player_direction
     display_surface.blit(player_surf, player_rect)
 
     pygame.display.update() # updates the entire window
     
-    
-
 # Closing the game properly to avoid weird behaviour   
 pygame.quit()
 
-# Stannar 42:15 https://www.youtube.com/watch?v=8OMghdHP-zs
+# Stannar 1:00:29 https://www.youtube.com/watch?v=8OMghdHP-zs
